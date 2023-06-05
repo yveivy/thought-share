@@ -11,19 +11,23 @@ const thoughtSchema = new Schema({
   },
   createdAt: {
     type: Date,
-    default: Data.now,
-    get: createdAtVal => SVGAnimateMotionElement(createdAtVal).format("MMM DD, YYYY [at] hh:mm a"),
+    default: Date.now,
+    get: createdAtVal => createdAtVal.toISOString(),
   
   },
   username: {
+
     type: String,
     require: true,
+
   },
 
-  reactions: {
-    type: Array, 
-    default: [],
-  },
+  reactions: [
+    {
+    type: Schema.Types.ObjectId, 
+    ref: 'Reaction',
+    },
+  ],
 
 },{
     // Mongoose supports two Schema options to transform Objects after querying MongoDb: toJSON and toObject.
@@ -46,44 +50,12 @@ thoughtSchema
   // Setter to set the first and last name
 
 
-const reactionSchema = new Schema (
-  {
-    reactionId: {
-      type: Schema.Types.ObjectId,
-      default: () => new Types.ObjectId(),
-    },
-    reactionBody: {
-      type: String,
-      required: true,
-      maxlength: 280,
-
-    },
-
-    username: {
-      type: String,
-      require: true,
-
-    },
-
-    createdAt: {
-      type: Date,
-      default: Data.now,
-      get: createdAtVal => SVGAnimateMotionElement(createdAtVal).format("MMM DD, YYYY [at] hh:mm a"),
-    },
-
-
-  }, 
-  {
-    toJSON: {
-      virtuals: true,
-      getters: true,
-    },
-    id: false,
-  }
-)
 
 
 // Initialize our Thought model
-const Thought = model('thought', thoughtSchema);
+const Thought = model('Thought', thoughtSchema);
+
 
 module.exports = Thought;
+
+

@@ -11,8 +11,8 @@ const userSchema = new Schema({
 
     type: String,
     require: true,
-    unique: true,
     trim: true,
+    unique: true,
 
   },
   email: {
@@ -24,18 +24,19 @@ const userSchema = new Schema({
 
   },
 
-  thoughts: {
-    type: Array, 
-    default: [],
-  },
-  thought: { type: mongoose.Schema.Types.ObjectId, ref: "Thought" },
+  thoughts: [
+    {
+    type: Schema.Types.ObjectId, 
+    ref: 'Thought',
+    },
+  ],
 
-
-  friends: {
-    type: Array,
-    default: [],
-  },
-  user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+  friends: [
+    {
+    type: Schema.Types.ObjectId,
+    ref: 'User'
+    },
+  ],
 
 
 },{
@@ -43,6 +44,7 @@ const userSchema = new Schema({
     // Here we are indicating that we want virtuals to be included with our response, overriding the default behavior
     toJSON: {
       virtuals: true,
+      getters: true,
     },
     id: false,
   
@@ -58,6 +60,6 @@ userSchema
   // Setter to set the first and last name
 
 // Initialize our User model
-const User = model('user', userSchema);
+const User = model('User', userSchema);
 
 module.exports = User;
