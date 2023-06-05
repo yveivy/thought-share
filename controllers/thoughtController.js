@@ -1,6 +1,7 @@
 const { User } = require('../models');
 const { Thought } = require('../models');
 const { Reaction }= require('../models');
+//I could never get my reactions to work. I tried to debug this for a while but I can't understand why Reaction is not importing as a table. So when I try to create a reaction the error I get is that Reaction is not a constructor.
 
 module.exports = {
     // Get all thoughts
@@ -81,7 +82,7 @@ module.exports = {
         try {
             const thought = await Thought.findOneAndUpdate(
                 { _id: req.params.thoughtId },
-                { $push: { thought: req.params.thoughtId } },
+                { $set: { thought: req.body } },
                 { runValidators: true, new: true }
             );
                 console.log(req.body);
