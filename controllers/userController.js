@@ -8,7 +8,7 @@ module.exports = {
   
         const userObj = {
           users,
-          userCount: await userCount(),
+          // userCount: await userCount(),
         };
   
         res.json(userObj);
@@ -21,15 +21,19 @@ module.exports = {
     async getSingleUser(req, res) {
       try {
         const user = await User.findOne({ _id: req.params.userId })
+          .populate("thoughts")
+          .populate("friends")
           .select('-__v');
   
         if (!user) {
           return res.status(404).json({ message: 'No user with that ID' })
         }
+
+        const thoughts = await Thought.find({ userId: req.params.userId});
   
         res.json({
           user,
-          thought: await thought(req.params.userId),
+          thoughts,
         });
       } catch (err) {
         console.log(err);
@@ -70,10 +74,10 @@ module.exports = {
         try {
             const user = await User.findOneAndUpdate(
                 { _id: req.params.userId },
-                { $addToset: { user: req.body } },
+                { $set: { user: req.body } },
                 { runValidators: true, new: true }
             );
-
+              
             if (!user) {
                 res.status(404).json({ message: 'No user with this id!' });
             }
@@ -111,11 +115,12 @@ module.exports = {
     async removeFriend(req, res) {
       try {
         const user = await User.findOneAndUpdate(
-          { _id: req.params.UserId },
-          { $pull: { friend: { assignmentId: req.params.friendId } } },
+          { _id: req.params.userId },
+          { $pull: { friends: req.params.friendId } },
           { runValidators: true, new: true }
         );
-  
+          console.log('User ID:', req.params.userId);
+          console.log('Friend ID:', req.params.friendId);
         if (!user) {
           return res
             .status(404)
@@ -124,6 +129,7 @@ module.exports = {
   
         res.json(user);
       } catch (err) {
+        console.log(err);
         res.status(500).json(err);
       }
     },
